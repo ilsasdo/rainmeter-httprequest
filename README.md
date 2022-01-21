@@ -8,7 +8,7 @@ This plugin aims to fill this gap and it makes a good match with [Rainmeter Json
 
 ## How to install
 
-1. Download the latest version from the [Release Page](/releases)
+1. Download the latest version from the [Release Page](https://github.com/ilsasdo/rainmeter-httprequest/releases/latest)
 2. Put it in the `Plugin` directory of Rainmeter
 3. Restart Rainmeter
 
