@@ -29,6 +29,8 @@ namespace HttpRequestPlugin
         private string method;
         private Dictionary<string, string> httpParams = new Dictionary<string, string>();
         private Dictionary<string, string> headers = new Dictionary<string, string>();
+        private string onFinish = "";
+        private string onError = "";
 
         public Measure(API api)
         {
@@ -38,6 +40,16 @@ namespace HttpRequestPlugin
         internal void SetUrl(string v)
         {
             this.url = v;
+        }
+
+        internal void SetOnFinish(string v)
+        {
+            this.onFinish = v;
+        }
+
+        internal void SetOnError(string v)
+        {
+            this.onError = v;
         }
 
         internal void AddParam(string param)
@@ -65,6 +77,7 @@ namespace HttpRequestPlugin
             }
 
             this.buffer = Marshal.StringToHGlobalUni(responseString);
+            api.Log(API.LogType.Debug,"Plugin HttpRequest: SetResponse");
         }
 
         internal void SetMethod(string method)
@@ -74,6 +87,8 @@ namespace HttpRequestPlugin
 
         internal void Update()
         {
+            api.Log(API.LogType.Debug,"Plugin HttpRequest: Update");
+            
             try
             {
                 WebClient webClient = new WebClient();
@@ -92,7 +107,7 @@ namespace HttpRequestPlugin
                     }
 
                     SetResponse(webClient.DownloadString(this.url));
-
+                    api.Execute(this.onFinish);
                 }
                 else if (this.GetHttpMethod() == HttpMethod.Post)
                 {
@@ -110,6 +125,7 @@ namespace HttpRequestPlugin
             {
                 api.Log(API.LogType.Error, "Error: " + e.Message);
                 SetResponse("");
+                api.Execute(this.onError);
             }
         }
 
@@ -135,6 +151,8 @@ namespace HttpRequestPlugin
             {
                 this.SetMethod(api.ReadString("Method", "GET"));
                 this.SetUrl(api.ReadString("URL", ""));
+                this.SetOnFinish(api.ReadString("OnFinish", "", false));
+                this.SetOnError(api.ReadString("OnError","",false));
                 this.httpParams.Clear();
                 this.headers.Clear();
 
@@ -179,6 +197,8 @@ namespace HttpRequestPlugin
         {
             Rainmeter.API api = (Rainmeter.API)rm;
             data = GCHandle.ToIntPtr(GCHandle.Alloc(new Measure(api)));
+
+            api.Log(API.LogType.Debug,"Plugin HTTPRequest: Initialize");
         }
 
         [DllExport]
@@ -199,6 +219,8 @@ namespace HttpRequestPlugin
             Rainmeter.API api = (Rainmeter.API)rm;
             measure.Reload();
             measure.Update();
+
+            api.Log(API.LogType.Debug,"Plugin HTTPRequest: Reload");
         }
 
         [DllExport]
