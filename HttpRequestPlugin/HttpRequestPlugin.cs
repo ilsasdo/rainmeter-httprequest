@@ -83,7 +83,6 @@ namespace HttpRequestPlugin
             }
 
             this.buffer = Marshal.StringToHGlobalUni(responseString);
-            api.Log(API.LogType.Debug,"Plugin HttpRequest: SetResponse");
         }
 
         internal void SetMethod(string method)
@@ -93,8 +92,6 @@ namespace HttpRequestPlugin
 
         internal void Update()
         {
-            api.Log(API.LogType.Debug,"Plugin HttpRequest: Update");
-            
             try
             {
                 WebClient webClient = new WebClient();
@@ -210,8 +207,6 @@ namespace HttpRequestPlugin
         {
             Rainmeter.API api = (Rainmeter.API)rm;
             data = GCHandle.ToIntPtr(GCHandle.Alloc(new Measure(api)));
-
-            api.Log(API.LogType.Debug,"Plugin HTTPRequest: Initialize");
         }
 
         [DllExport]
@@ -232,8 +227,6 @@ namespace HttpRequestPlugin
             Rainmeter.API api = (Rainmeter.API)rm;
             measure.Reload();
             measure.Update();
-
-            api.Log(API.LogType.Debug,"Plugin HTTPRequest: Reload");
         }
 
         [DllExport]
