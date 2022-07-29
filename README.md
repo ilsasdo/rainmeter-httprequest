@@ -46,7 +46,9 @@ Query="body.devices[0].dashboard_data.Temperature"
 The value is in the form: `name=value`. You should not UrlEncode the `value` part, it will be accounted automatically by `HttpRequestPlugin`.
 You can use the Option `Param` to specify both Query Params and Form Params to send along the request.
 * `HeaderNNN`: same logic as `ParamNNN` but for request headers. You can write in the form of `name: value`, they will be written as-is in the http request.
-
+* `DownloadFile`:  path where to store the downloaded file (like images)
+* `OnFinish`: Event triggered on Download Finished with success
+* `OnError`: Event triggered on Download Error.
 
 ### Examples
 
