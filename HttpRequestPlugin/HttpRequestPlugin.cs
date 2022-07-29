@@ -27,8 +27,11 @@ namespace HttpRequestPlugin
         private Rainmeter.API api;
         private string url;
         private string method;
+        private string downloadFile = "";
         private Dictionary<string, string> httpParams = new Dictionary<string, string>();
         private Dictionary<string, string> headers = new Dictionary<string, string>();
+        private string onFinish = "";
+        private string onError = "";
 
         public Measure(API api)
         {
@@ -38,6 +41,21 @@ namespace HttpRequestPlugin
         internal void SetUrl(string v)
         {
             this.url = v;
+        }
+
+        internal void SetDownloadFile(string v)
+        {
+            this.downloadFile = v;
+        }
+
+        internal void SetOnFinish(string v)
+        {
+            this.onFinish = v;
+        }
+
+        internal void SetOnError(string v)
+        {
+            this.onError = v;
         }
 
         internal void AddParam(string param)
@@ -91,8 +109,14 @@ namespace HttpRequestPlugin
                         webClient.QueryString.Add(param.Key, param.Value);
                     }
 
-                    SetResponse(webClient.DownloadString(this.url));
-
+                    if ( this.downloadFile != "" )
+                    {
+                        webClient.DownloadFile(this.url,this.downloadFile);
+                        SetResponse(this.downloadFile);
+                    } else
+                        SetResponse(webClient.DownloadString(this.url));
+                    
+                    api.Execute(this.onFinish);
                 }
                 else if (this.GetHttpMethod() == HttpMethod.Post)
                 {
@@ -110,6 +134,7 @@ namespace HttpRequestPlugin
             {
                 api.Log(API.LogType.Error, "Error: " + e.Message);
                 SetResponse("");
+                api.Execute(this.onError);
             }
         }
 
@@ -135,6 +160,9 @@ namespace HttpRequestPlugin
             {
                 this.SetMethod(api.ReadString("Method", "GET"));
                 this.SetUrl(api.ReadString("URL", ""));
+                this.SetDownloadFile(api.ReadString("DownloadFile", "", false));
+                this.SetOnFinish(api.ReadString("OnFinish", "", false));
+                this.SetOnError(api.ReadString("OnError","",false));
                 this.httpParams.Clear();
                 this.headers.Clear();
 
