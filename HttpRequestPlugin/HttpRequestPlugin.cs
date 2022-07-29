@@ -109,12 +109,13 @@ namespace HttpRequestPlugin
                         webClient.QueryString.Add(param.Key, param.Value);
                     }
 
-                    if ( this.downloadFile != "" )
+                    if (this.downloadFile != "")
                     {
-                        webClient.DownloadFile(this.url,this.downloadFile);
+                        webClient.DownloadFile(this.url, this.downloadFile);
                         SetResponse(this.downloadFile);
-                    } else
+                    } else { 
                         SetResponse(webClient.DownloadString(this.url));
+                    }
                     
                     api.Execute(this.onFinish);
                 }
