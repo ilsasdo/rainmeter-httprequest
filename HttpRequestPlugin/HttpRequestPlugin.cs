@@ -94,6 +94,7 @@ namespace HttpRequestPlugin
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
                 WebClient webClient = new WebClient();
                 foreach (var header in headers)
                 {
